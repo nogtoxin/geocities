@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Geocities Web Site</title>
+  <style>
+    body, html {
+      margin:0;
+      padding:0;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      position:relative;
+      background-image: url('background.gif');
+      background-repeat: repeat;
+    }
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+    .mover {
+      position:absolute;
+      animation:blink 2s infinite;
+    }
+    .fancysentence {
+      position:absolute;
+      top:10px; left:10px;
+      font-family:"Comic Sans MS", cursive, sans-serif;
+      font-size:2em;
+      color:magenta;
+      text-shadow:2px 2px lime;
+      background:rgba(0,0,0,0.3);
+      padding:5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="sentence" class="fancysentence"></div>
+
+  <script>
+  function pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  async function getRandomWords(count) {
+    const res = await fetch(`https://random-word-api.herokuapp.com/word?number=${count}`);
+    if (!res.ok) throw new Error("Word API request failed");
+    return await res.json();
+  }
+
+  async function fetchGifUrlsFor(word) {
+    const url = `https://gifcities.org/search?q=${encodeURIComponent(word)}&offset=0&page_size=200`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("GifCities request failed");
+    const text = await res.text();
+    const matches = [...text.matchAll(/(https?:\/\/[^"']+\.gif)/g)];
+    return matches.map(m => m[1]);
+  }
+
+  async function update() {
+    try {
+      document.querySelectorAll('.mover').forEach(el => el.remove());
+
+      const chosen = await getRandomWords(3);
+      document.getElementById('sentence').textContent = chosen.join(' ');
+
+      let allGifs = [];
+      for (const w of chosen) {
+        const urls = await fetchGifUrlsFor(w);
+        allGifs = allGifs.concat(urls);
+      }
+
+      // Place GIFs randomly
+      allGifs.forEach(src => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.className = 'mover';
+        img.style.width = `${50 + Math.random()*200}px`;
+        img.style.top = `${Math.random()*90}%`;
+        img.style.left = `${Math.random()*90}%`;
+        document.body.appendChild(img);
+      });
+    } catch (err) {
+      console.error("Update failed:", err);
+    }
+  }
+
+  update();
+  setInterval(update, 60*1000);
+  </script>
+</body>
+</html>
