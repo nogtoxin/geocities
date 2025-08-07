@@ -22,7 +22,7 @@
     .fancysentence {
       position:absolute;
       top:10px; left:10px;
-      font-family:"Times New Roman", cursive, sans-serif;
+      font-family:"Times New Roman", serif;
       font-size:2em;
       color:magenta;
       text-shadow:2px 2px lime;
@@ -44,8 +44,10 @@
   }
 
   async function fetchGifUrlsFor(word) {
-    const url = `https://gifcities.org/search?q=${encodeURIComponent(word)}&offset=0&page_size=200`;
-    const res = await fetch(url);
+    const targetUrl = `https://gifcities.org/search?q=${encodeURIComponent(word)}&offset=0&page_size=200`;
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
+
+    const res = await fetch(proxyUrl);
     if (!res.ok) throw new Error("GifCities request failed");
     const text = await res.text();
     const matches = [...text.matchAll(/(https?:\/\/[^"']+\.gif)/g)];
@@ -68,7 +70,7 @@
       allGifs.forEach(src => {
         const img = document.createElement('img');
         img.src = src;
-        img.className = https://www.transparenttextures.com/patterns/80s-gradient.png'mover';
+        img.className = 'mover';
         img.style.width = `${50 + Math.random()*200}px`;
         img.style.top = `${Math.random()*90}%`;
         img.style.left = `${Math.random()*90}%`;
