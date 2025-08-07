@@ -22,7 +22,7 @@
     .fancysentence {
       position:absolute;
       top:10px; left:10px;
-      font-family:"Comic Sans MS", cursive, sans-serif;
+      font-family:"Times New Roman", cursive, sans-serif;
       font-size:2em;
       color:magenta;
       text-shadow:2px 2px lime;
@@ -65,11 +65,10 @@
         allGifs = allGifs.concat(urls);
       }
 
-      // Place GIFs randomly
       allGifs.forEach(src => {
         const img = document.createElement('img');
         img.src = src;
-        img.className = 'mover';
+        img.className = https://www.transparenttextures.com/patterns/80s-gradient.png'mover';
         img.style.width = `${50 + Math.random()*200}px`;
         img.style.top = `${Math.random()*90}%`;
         img.style.left = `${Math.random()*90}%`;
